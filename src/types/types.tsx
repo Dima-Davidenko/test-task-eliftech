@@ -7,8 +7,9 @@ export interface product {
   name: string;
   price: string;
 }
-export interface productList {
+export interface shopInfo {
   id: string;
   shopId: string;
+  shopName: string;
   productList: product[];
 }
