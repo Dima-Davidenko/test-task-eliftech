@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { shopList } from '../../types/types';
 import { getShopList } from '../../utils/shopsApi';
 import ShopCard from '../ShopCard/ShopCard';
+import { useSelector } from 'react-redux';
+import { selectShopInCart } from '../../redux/shoppingCart/shoppingCartSelectors';
 
 type Props = {
   setselectedShopId: (id: string) => void;
@@ -9,6 +11,7 @@ type Props = {
 
 const ShopList = ({ setselectedShopId }: Props) => {
   const [shopList, setShopList] = useState<shopList[] | []>([]);
+  const shopInCartId = useSelector(selectShopInCart);
 
   useEffect(() => {
     getShopList().then(shops => {
@@ -21,16 +24,31 @@ const ShopList = ({ setselectedShopId }: Props) => {
       <p>Shop List:</p>
       <ul>
         {shopList.map(({ id, shopName, logo }) => {
-          return (
-            <li key={id}>
-              <ShopCard
-                id={id}
-                shopName={shopName}
-                logo={logo}
-                setselectedShopId={setselectedShopId}
-              />
-            </li>
-          );
+          if (shopInCartId) {
+            return (
+              <li key={id}>
+                <ShopCard
+                  id={id}
+                  shopName={shopName}
+                  logo={logo}
+                  setselectedShopId={setselectedShopId}
+                  disabled={shopInCartId !== id}
+                />
+              </li>
+            );
+          } else {
+            return (
+              <li key={id}>
+                <ShopCard
+                  id={id}
+                  shopName={shopName}
+                  logo={logo}
+                  setselectedShopId={setselectedShopId}
+                  disabled={false}
+                />
+              </li>
+            );
+          }
         })}
       </ul>
     </div>

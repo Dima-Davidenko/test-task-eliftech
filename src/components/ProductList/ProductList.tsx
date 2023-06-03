@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useTypedDispatch } from '../../hooks/useTypedDispatch';
+import { addItem } from '../../redux/shoppingCart/shoppingCartSlice';
 import { product } from '../../types/types';
 import { getProductListByShopId } from '../../utils/shopsApi';
-import { addItem } from '../../redux/shoppingCart/shoppingCartSlice';
 
 type Props = {
   selectedShopId: string;
@@ -22,7 +22,7 @@ const ProductList = ({ selectedShopId }: Props) => {
   }, [selectedShopId]);
 
   const onBtnBuyClick = (name: string, id: string, price: string) => {
-    dispatch(addItem({ shopId: selectedShopId, id, name, price }));
+    dispatch(addItem({ shopId: selectedShopId, id, name, price, quantity: 1 }));
   };
 
   return (

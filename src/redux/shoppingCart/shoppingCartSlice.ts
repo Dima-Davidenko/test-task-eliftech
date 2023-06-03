@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { shoppingCart, shoppingCartItem } from '../../types/types';
 
 const initialState: shoppingCart = {
+  shopId: '',
   productList: [],
 };
 
@@ -10,7 +11,23 @@ const shoppingCartSlice = createSlice({
   initialState,
   reducers: {
     addItem: (state, { payload }: { payload: shoppingCartItem }) => {
-      return { productList: [...state.productList, payload] };
+      const shopId = state.shopId || payload.shopId;
+      if (state.shopId && payload.shopId !== state.shopId) return state;
+
+      const isInCart = state.productList.find(({ id, shopId }) => {
+        return id === payload.id && shopId === payload.shopId;
+      });
+
+      if (!isInCart) {
+        return { shopId, productList: [...state.productList, payload] };
+      } else {
+        const updatedCart = state.productList.map(product => {
+          return product.id === payload.id && product.shopId === payload.shopId
+            ? { ...product, quantity: product.quantity + payload.quantity }
+            : product;
+        });
+        return { shopId, productList: updatedCart };
+      }
     },
     removeItem: (
       state,
@@ -23,10 +40,15 @@ const shoppingCartSlice = createSlice({
         };
       }
     ) => {
-      const filteredState = state.productList.filter(cartItem => {
-        return cartItem.shopId !== payload.shopId && cartItem.id !== payload.id;
+      const newProductList = state.productList.map(product => {
+        return product.id === payload.id && product.shopId === payload.shopId
+          ? { ...product, quantity: product.quantity - 1 }
+          : product;
       });
-      return { productList: [...filteredState] };
+      const filteredList = newProductList.filter(cartItem => {
+        return cartItem.quantity > 0;
+      });
+      return { shopId: filteredList.length ? state.shopId : '', productList: [...filteredList] };
     },
   },
 });

@@ -17,8 +17,10 @@ export interface shopInfo {
 
 export interface shoppingCartItem extends product {
   shopId: string;
+  quantity: number;
 }
 
 export interface shoppingCart {
+  shopId: string;
   productList: shoppingCartItem[];
 }
