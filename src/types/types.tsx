@@ -4,6 +4,7 @@ export interface shopList {
   logo: string;
 }
 export interface product {
+  id: string;
   name: string;
   price: string;
 }
@@ -12,4 +13,12 @@ export interface shopInfo {
   shopId: string;
   shopName: string;
   productList: product[];
+}
+
+export interface shoppingCartItem extends product {
+  shopId: string;
+}
+
+export interface shoppingCart {
+  productList: shoppingCartItem[];
 }
