@@ -50,9 +50,10 @@ const shoppingCartSlice = createSlice({
       });
       return { shopId: filteredList.length ? state.shopId : '', productList: [...filteredList] };
     },
+    resetShoppingCart: () => initialState,
   },
 });
 
-export const { addItem, removeItem } = shoppingCartSlice.actions;
+export const { addItem, removeItem, resetShoppingCart } = shoppingCartSlice.actions;
 
 export const shoppingCartReducer = shoppingCartSlice.reducer;

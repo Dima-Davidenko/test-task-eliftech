@@ -11,21 +11,21 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { shoppingCartReducer } from './shoppingCart/shoppingCartSlice';
+import { clientDataReducer } from './clientData/clientDataSlice';
 
 const persistConfig = {
-  key: 'root',
+  key: 'shop',
   storage,
-  whitelist: ['productList'],
+  whitelist: ['clientData', 'shoppingCart'],
 };
-
-const persistedReducer = persistReducer(persistConfig, shoppingCartReducer);
-
 const rootReducer = combineReducers({
-  shoppingCart: persistedReducer,
+  shoppingCart: shoppingCartReducer,
+  clientData: clientDataReducer,
 });
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-  reducer: rootReducer,
+  reducer: persistedReducer,
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {

@@ -24,3 +24,12 @@ export interface shoppingCart {
   shopId: string;
   productList: shoppingCartItem[];
 }
+
+export interface clientData {
+  contacts: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+}
