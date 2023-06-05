@@ -7,6 +7,7 @@ const initialState: clientData = {
     email: '',
     phone: '',
     address: '',
+    selectedAddress: '',
   },
 };
 
@@ -26,6 +27,9 @@ const clientDataSlice = createSlice({
     updateClientAddress: (state, { payload }: { payload: string }) => {
       return { contacts: { ...state.contacts, address: payload } };
     },
+    updateSelectedAddress: (state, { payload }: { payload: string }) => {
+      return { contacts: { ...state.contacts, selectedAddress: payload } };
+    },
     resetClientData: () => initialState,
   },
 });
@@ -36,6 +40,7 @@ export const {
   updateClientEmail,
   updateClientPhone,
   resetClientData,
+  updateSelectedAddress,
 } = clientDataSlice.actions;
 
 export const clientDataReducer = clientDataSlice.reducer;

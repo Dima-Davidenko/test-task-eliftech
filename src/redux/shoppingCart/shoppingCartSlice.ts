@@ -29,6 +29,37 @@ const shoppingCartSlice = createSlice({
         return { shopId, productList: updatedCart };
       }
     },
+    quantityChange: (
+      state,
+      {
+        payload,
+      }: {
+        payload: {
+          id: string;
+          quantity: number;
+        };
+      }
+    ) => {
+      const isInCart = state.productList.findIndex(({ id }) => {
+        return id === payload.id;
+      });
+
+      if (isInCart === -1) {
+        return state;
+      } else {
+        if (payload.quantity) {
+          const updatedCart = state.productList.map(product => {
+            return product.id === payload.id ? { ...product, quantity: payload.quantity } : product;
+          });
+          return { ...state, productList: updatedCart };
+        } else {
+          const filteredList = state.productList.filter(cartItem => {
+            return cartItem.id !== payload.id;
+          });
+          return { ...state, productList: filteredList };
+        }
+      }
+    },
     removeItem: (
       state,
       {
@@ -40,13 +71,8 @@ const shoppingCartSlice = createSlice({
         };
       }
     ) => {
-      const newProductList = state.productList.map(product => {
-        return product.id === payload.id && product.shopId === payload.shopId
-          ? { ...product, quantity: product.quantity - 1 }
-          : product;
-      });
-      const filteredList = newProductList.filter(cartItem => {
-        return cartItem.quantity > 0;
+      const filteredList = state.productList.filter(cartItem => {
+        return cartItem.id !== payload.id;
       });
       return { shopId: filteredList.length ? state.shopId : '', productList: [...filteredList] };
     },
@@ -54,6 +80,6 @@ const shoppingCartSlice = createSlice({
   },
 });
 
-export const { addItem, removeItem, resetShoppingCart } = shoppingCartSlice.actions;
+export const { addItem, removeItem, resetShoppingCart, quantityChange } = shoppingCartSlice.actions;
 
 export const shoppingCartReducer = shoppingCartSlice.reducer;

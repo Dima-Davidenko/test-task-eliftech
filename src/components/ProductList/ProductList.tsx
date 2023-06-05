@@ -2,24 +2,21 @@ import { useEffect, useState } from 'react';
 import { useTypedDispatch } from '../../hooks/useTypedDispatch';
 import { addItem } from '../../redux/shoppingCart/shoppingCartSlice';
 import { product } from '../../types/types';
-import { getProductListByShopId } from '../../utils/shopsApi';
+import { getShopInfoById } from '../../utils/shopsApi';
+import { useSelector } from 'react-redux';
+import {
+  selectSelectedShopName,
+  selectSelectedShopProductList,
+} from '../../redux/selectedShopData/selectedShopDataSelectors';
 
 type Props = {
   selectedShopId: string;
 };
 
 const ProductList = ({ selectedShopId }: Props) => {
-  const [productList, setProductList] = useState<product[] | []>([]);
-  const [shopName, setShopName] = useState<string>('');
+  const productList = useSelector(selectSelectedShopProductList);
+  const shopName = useSelector(selectSelectedShopName);
   const dispatch = useTypedDispatch();
-  useEffect(() => {
-    if (selectedShopId) {
-      getProductListByShopId(selectedShopId).then(({ productList, shopName }) => {
-        setProductList(productList);
-        setShopName(shopName);
-      });
-    }
-  }, [selectedShopId]);
 
   const onBtnBuyClick = (name: string, id: string, price: string) => {
     dispatch(addItem({ shopId: selectedShopId, id, name, price, quantity: 1 }));

@@ -1,0 +1,16 @@
+.container {
+  padding: 20px;
+}
+.navLink {
+  display: inline-block;
+  padding: 10px 40px;
+  text-decoration: none;
+  font-weight: 700;
+  color: blue;
+}
+.navLink:hover {
+  background-color: rgb(168, 168, 168);
+}
+.navLink:not(:last-child) {
+  border-right: 2px solid black;
+}

@@ -5,13 +5,16 @@ import {
   selectClientEmail,
   selectClientName,
   selectClientPhone,
+  selectSelectedAddress,
 } from '../../redux/clientData/clientDataSelectors';
 import {
   updateClientAddress,
   updateClientEmail,
   updateClientName,
   updateClientPhone,
+  updateSelectedAddress,
 } from '../../redux/clientData/clientDataSlice';
+import css from './ClientDataForm.module.css';
 
 type Props = {};
 
@@ -20,10 +23,11 @@ const ClientDataForm = (props: Props) => {
   const email = useSelector(selectClientEmail);
   const phone = useSelector(selectClientPhone);
   const address = useSelector(selectClientAddress);
+  const selectedAddress = useSelector(selectSelectedAddress);
   const dispatch = useTypedDispatch();
 
   return (
-    <form>
+    <form className={css.container}>
       <label>
         Name
         <input
@@ -52,14 +56,21 @@ const ClientDataForm = (props: Props) => {
         />
       </label>
       <label>
-        Address
+        Type your Address manualy
         <input
-          onChange={e => dispatch(updateClientAddress(e.target.value))}
+          onChange={e => {
+            dispatch(updateClientAddress(e.target.value));
+            dispatch(updateSelectedAddress(e.target.value));
+          }}
           type="text"
           name="address"
           value={address}
         />
       </label>
+      <div>
+        <p>Chosen address</p>
+        <p>{selectedAddress}</p>
+      </div>
     </form>
   );
 };

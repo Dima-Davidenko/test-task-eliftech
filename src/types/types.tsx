@@ -13,6 +13,7 @@ export interface shopInfo {
   shopId: string;
   shopName: string;
   productList: product[];
+  shopCoords: google.maps.LatLngLiteral | null;
 }
 
 export interface shoppingCartItem extends product {
@@ -31,5 +32,6 @@ export interface clientData {
     email: string;
     phone: string;
     address: string;
+    selectedAddress: string;
   };
 }

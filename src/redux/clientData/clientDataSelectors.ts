@@ -15,3 +15,7 @@ export const selectClientPhone = (s: RootState) => {
 export const selectClientAddress = (s: RootState) => {
   return s.clientData.contacts.address;
 };
+
+export const selectSelectedAddress = (s: RootState) => {
+  return s.clientData.contacts.selectedAddress;
+};

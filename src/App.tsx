@@ -1,17 +1,12 @@
-import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+import NavMenu from './components/NavMenu/NavMenu';
 import Shop from './pages/Shop/Shop';
 import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
-import { NavLink, Route, Routes } from 'react-router-dom';
 
 const App = () => {
   return (
     <div>
-      <nav>
-        <NavLink to="/" end>
-          Shop
-        </NavLink>
-        <NavLink to="/shopping-cart">Shopping Cart</NavLink>
-      </nav>
+      <NavMenu />
       <Routes>
         <Route path="/" element={<Shop />} />
         <Route path="/shopping-cart" element={<ShoppingCart />} />
