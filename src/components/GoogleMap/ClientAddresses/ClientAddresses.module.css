@@ -1,6 +1,5 @@
 .container {
-  padding: 20px;
-  background-color: #fff;
+  width: 100%;
 }
 .list {
   list-style: none;
@@ -14,4 +13,18 @@
 }
 .item:hover {
   background-color: blueviolet;
+}
+.input {
+  display: block;
+  width: 100%;
+}
+.title {
+  margin: 10px 0;
+}
+.address {
+  margin: 10px 0;
+  font-weight: 700;
+}
+.wrapper {
+  margin-top: 10px;
 }

@@ -5,6 +5,6 @@ export const getAddressByCoords = async (coords: google.maps.LatLngLiteral | nul
     const { data } = await axios.get(
       `https://maps.googleapis.com/maps/api/geocode/json?latlng=${coords.lat},${coords.lng}&key=${process.env.REACT_APP_GOOGLE_APP_API_KEY}`
     );
-    return data;
+    return data.results as google.maps.GeocoderResult[];
   }
 };

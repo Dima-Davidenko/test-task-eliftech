@@ -1,0 +1,24 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+.productImg {
+  margin-bottom: 10px;
+  border-radius: 10px;
+}
+.productName {
+  margin: 0 0 10px;
+}
+.productPrice {
+  margin: 0 0 10px;
+}
+.orderBtn {
+  align-self: flex-end;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 10px;
+}

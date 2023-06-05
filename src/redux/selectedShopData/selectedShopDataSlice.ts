@@ -16,10 +16,13 @@ const selectedShopDataSlice = createSlice({
     updateSelectedShopData: (_, { payload }: { payload: shopInfo }) => {
       return { ...payload };
     },
+    updateSelectedShopId: (state, { payload }: { payload: string }) => {
+      return { ...state, shopId: payload };
+    },
     resetClientData: () => initialState,
   },
 });
 
-export const { updateSelectedShopData } = selectedShopDataSlice.actions;
+export const { updateSelectedShopData, updateSelectedShopId } = selectedShopDataSlice.actions;
 
 export const selectedShopDataReducer = selectedShopDataSlice.reducer;

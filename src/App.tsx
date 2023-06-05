@@ -5,13 +5,13 @@ import ShoppingCart from './pages/ShoppingCart/ShoppingCart';
 
 const App = () => {
   return (
-    <div>
+    <>
       <NavMenu />
       <Routes>
         <Route path="/" element={<Shop />} />
         <Route path="/shopping-cart" element={<ShoppingCart />} />
       </Routes>
-    </div>
+    </>
   );
 };
 

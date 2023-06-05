@@ -33,5 +33,10 @@ export interface clientData {
     phone: string;
     address: string;
     selectedAddress: string;
+    selectedMarkerPosition: google.maps.LatLngLiteral | null;
   };
+}
+export interface directionProps {
+  distance: string | undefined;
+  duration: string | undefined;
 }

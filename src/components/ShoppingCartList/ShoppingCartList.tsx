@@ -1,4 +1,5 @@
 import React from 'react';
+import css from './ShoppingCartList.module.css';
 import { useSelector } from 'react-redux';
 import { selectShoppingCartList } from '../../redux/shoppingCart/shoppingCartSelectors';
 import { useTypedDispatch } from '../../hooks/useTypedDispatch';
@@ -20,12 +21,13 @@ const ShoppingCartList = (props: Props) => {
   }, 0);
 
   return (
-    <>
+    <div className={css.container}>
       {shoppingCartList?.length !== 0 && (
-        <ul>
+        <ul className={css.list}>
           {shoppingCartList.map(({ name, price, id, shopId, quantity }) => {
             return (
-              <li key={id + shopId}>
+              <li className={css.item} key={id + shopId}>
+                <img className={css.productImg} src="https://placehold.co/200x100" alt={name} />
                 <p>{name}</p>
                 <p>{price}</p>
                 <input
@@ -42,7 +44,7 @@ const ShoppingCartList = (props: Props) => {
         </ul>
       )}
       <p>Total Price: {totalPrice} UAH</p>
-    </>
+    </div>
   );
 };
 

@@ -13,6 +13,7 @@ import storage from 'redux-persist/lib/storage';
 import { shoppingCartReducer } from './shoppingCart/shoppingCartSlice';
 import { clientDataReducer } from './clientData/clientDataSlice';
 import { selectedShopDataReducer } from './selectedShopData/selectedShopDataSlice';
+import { shopListReducer } from './shopList/shopListSlice';
 
 const persistConfig = {
   key: 'shop',
@@ -23,6 +24,7 @@ const rootReducer = combineReducers({
   shoppingCart: shoppingCartReducer,
   clientData: clientDataReducer,
   selectedShopData: selectedShopDataReducer,
+  shopList: shopListReducer,
 });
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

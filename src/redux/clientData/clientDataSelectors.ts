@@ -19,3 +19,7 @@ export const selectClientAddress = (s: RootState) => {
 export const selectSelectedAddress = (s: RootState) => {
   return s.clientData.contacts.selectedAddress;
 };
+
+export const selectSelectedMarkerPosition = (s: RootState) => {
+  return s.clientData.contacts.selectedMarkerPosition;
+};

@@ -3,6 +3,7 @@ import ClientDataForm from '../../components/ClientDataForm/ClientDataForm';
 import GoogleMapAdress from '../../components/GoogleMap/GoogleMapAdress';
 import ShoppingCartList from '../../components/ShoppingCartList/ShoppingCartList';
 import { useTypedDispatch } from '../../hooks/useTypedDispatch';
+import css from './ShoppingCart.module.css';
 import {
   selectClientAddress,
   selectClientEmail,
@@ -17,12 +18,15 @@ import {
 import { resetShoppingCart } from '../../redux/shoppingCart/shoppingCartSlice';
 import ClientAddresses from '../../components/GoogleMap/ClientAddresses/ClientAddresses';
 import { useState } from 'react';
+import Directions from '../../components/Directions/Directions';
 
 type Props = {};
 
 const ShoppingCart = (props: Props) => {
-  const [clientAddressesArray, setClientAddressesArray] = useState<string[] | []>([]);
-  const [getDirections, setGetDirections] = useState<boolean>(false);
+  const [clientAddressesArray, setClientAddressesArray] = useState<
+    google.maps.GeocoderResult[] | null
+  >(null);
+  const [directions, setDirections] = useState<boolean>(false);
   const [directionProps, setDirectionProps] = useState<{
     distance: string | undefined;
     duration: string | undefined;
@@ -35,46 +39,51 @@ const ShoppingCart = (props: Props) => {
   const address = useSelector(selectClientAddress);
   const products = useSelector(selectShoppingCartList);
   const shopId = useSelector(selectShopInCart);
+  const submitBtnDisabled = !shoppingCartList.length || !name || !email || !phone || !address;
+
   const saveOrder = () => {
     localStorage.setItem(
-      'clientContacts',
+      'order',
       JSON.stringify({
         clientContacts: { name, email, phone, address },
         products,
         shopId,
       })
     );
-    dispatch(resetClientData());
+    // dispatch(resetClientData());
     dispatch(resetShoppingCart());
   };
 
-  const resetDirections = () => {
-    setGetDirections(false);
-    setDirectionProps(null);
-  };
-
   return (
-    <div>
-      <GoogleMapAdress
-        setClientAddressesArray={setClientAddressesArray}
-        setDirectionProps={setDirectionProps}
-        getDirections={getDirections}
-      />
-      <ClientDataForm />
-      <ShoppingCartList />
-      <ClientAddresses clientAddressesArray={clientAddressesArray} />
-      {shoppingCartList.length !== 0 && <button onClick={saveOrder}>Order</button>}
-      {getDirections ? (
-        <button onClick={resetDirections}>Reset directions</button>
-      ) : (
-        <button onClick={() => setGetDirections(true)}>Get directions</button>
-      )}
-      {directionProps && (
-        <>
-          <p>{directionProps.distance}</p>
-          <p>{directionProps.duration}</p>
-        </>
-      )}
+    <div className={css.container}>
+      <div className={css.leftColumn}>
+        <GoogleMapAdress
+          setClientAddressesArray={setClientAddressesArray}
+          setDirectionProps={setDirectionProps}
+          getDirections={directions}
+        />
+        <ClientDataForm />
+        <ClientAddresses
+          clientAddressesArray={clientAddressesArray}
+          setClientAddressesArray={setClientAddressesArray}
+        />
+        <Directions
+          directions={directions}
+          setDirections={setDirections}
+          directionProps={directionProps}
+          setDirectionProps={setDirectionProps}
+        />
+      </div>
+      <div className={css.rightColumn}>
+        <ShoppingCartList />
+        {submitBtnDisabled && (
+          <p>To Submit the order enter your data in all inputs and add product to your cart</p>
+        )}
+
+        <button className={css.orderBtn} onClick={saveOrder} disabled={submitBtnDisabled}>
+          Submit
+        </button>
+      </div>
     </div>
   );
 };

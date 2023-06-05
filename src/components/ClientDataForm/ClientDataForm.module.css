@@ -2,3 +2,12 @@
   display: flex;
   flex-direction: column;
 }
+.title {
+  margin: 0 0 10px;
+}
+.label {
+  margin-bottom: 10px;
+}
+.input {
+  display: block;
+}

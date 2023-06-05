@@ -1,49 +1,55 @@
-import React, { useEffect, useState } from 'react';
-import { shopList } from '../../types/types';
+import { useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import { useTypedDispatch } from '../../hooks/useTypedDispatch';
+import { updateSelectedShopId } from '../../redux/selectedShopData/selectedShopDataSlice';
+import { selectShopList } from '../../redux/shopList/shopListSelectors';
+import { updateShopList } from '../../redux/shopList/shopListSlice';
+import { selectShopInCart } from '../../redux/shoppingCart/shoppingCartSelectors';
 import { getShopList } from '../../utils/shopsApi';
 import ShopCard from '../ShopCard/ShopCard';
-import { useSelector } from 'react-redux';
-import { selectShopInCart } from '../../redux/shoppingCart/shoppingCartSelectors';
+import css from './ShopList.module.css';
 
 type Props = {
-  setselectedShopId: (id: string) => void;
+  // setselectedShopId: (id: string) => void;
 };
 
-const ShopList = ({ setselectedShopId }: Props) => {
-  const [shopList, setShopList] = useState<shopList[] | []>([]);
+const ShopList = (props: Props) => {
+  const dispatch = useTypedDispatch();
+  const shopList = useSelector(selectShopList);
   const shopInCartId = useSelector(selectShopInCart);
 
   useEffect(() => {
-    getShopList().then(shops => {
-      setShopList(shops);
-    });
-  }, []);
+    if (!shopList) {
+      getShopList().then(shops => {
+        dispatch(updateShopList(shops));
+      });
+    }
+  }, [dispatch, shopList]);
 
+  const changeSelectedShop = (shopId: string) => {
+    if (!shopInCartId) {
+      dispatch(updateSelectedShopId(shopId));
+    }
+  };
   return (
-    <div>
-      <p>Shop List:</p>
-      <ul>
-        {shopList.map(({ id, shopName, logo }) => {
+    <div className={css.container}>
+      <p>Shops:</p>
+      <ul className={css.list}>
+        {shopList?.map(({ id, shopName, logo }) => {
           if (shopInCartId) {
             return (
-              <li key={id}>
-                <ShopCard
-                  id={id}
-                  shopName={shopName}
-                  logo={logo}
-                  setselectedShopId={setselectedShopId}
-                  disabled={shopInCartId !== id}
-                />
+              <li className={css.item} key={id}>
+                <ShopCard id={id} shopName={shopName} logo={logo} disabled={shopInCartId !== id} />
               </li>
             );
           } else {
             return (
-              <li key={id}>
+              <li className={css.item} key={id}>
                 <ShopCard
                   id={id}
                   shopName={shopName}
                   logo={logo}
-                  setselectedShopId={setselectedShopId}
+                  setselectedShopId={() => changeSelectedShop(id)}
                   disabled={false}
                 />
               </li>

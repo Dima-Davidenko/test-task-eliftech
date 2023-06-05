@@ -1,0 +1,10 @@
+.container {
+  display: flex;
+  gap: 20px;
+}
+.btn {
+  height: 50px;
+  width: 200px;
+  border-radius: 20px;
+  border: 1px solid black;
+}

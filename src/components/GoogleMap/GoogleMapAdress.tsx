@@ -10,11 +10,20 @@ import { getAddressByCoords } from '../../utils/getAddressByCoords';
 import css from './GoogleMap.module.css';
 import { PanningComponent } from './PanningComponent/PanningComponent';
 import { useTypedDispatch } from '../../hooks/useTypedDispatch';
-import { updateSelectedAddress } from '../../redux/clientData/clientDataSlice';
+import {
+  updateSelectedAddress,
+  updateSelectedMarkerPosition,
+} from '../../redux/clientData/clientDataSlice';
+import { useSelector } from 'react-redux';
+import {
+  selectSelectedShopCoords,
+  selectSelectedShopName,
+} from '../../redux/selectedShopData/selectedShopDataSelectors';
+import { selectSelectedMarkerPosition } from '../../redux/clientData/clientDataSelectors';
 
 type Props = {
   getDirections: boolean;
-  setClientAddressesArray: (addresses: string[]) => void;
+  setClientAddressesArray: (addresses: google.maps.GeocoderResult[] | null) => void;
   setDirectionProps: (
     directionProps: {
       distance: string | undefined;
@@ -28,37 +37,33 @@ const GoogleMapAdress = ({ setClientAddressesArray, setDirectionProps, getDirect
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY as string,
   });
+  const selectedShopAddress = useSelector(selectSelectedShopCoords);
+  const selectedShopName = useSelector(selectSelectedShopName);
 
-  const center: google.maps.LatLngLiteral = {
-    lat: 49.83585078556992,
-    lng: 24.031460890210997,
+  const defaultMapCenter: google.maps.LatLngLiteral = {
+    lat: 49.85606215181253,
+    lng: 24.03341576137615,
   };
 
-  const shopAddress: google.maps.LatLngLiteral = {
-    lat: 49.8382814632069,
-    lng: 23.972132756869566,
-  };
-  const [markerPosition, setMarkerPosition] = useState<google.maps.LatLngLiteral | null>(null);
+  const selectedMarkerPosition = useSelector(selectSelectedMarkerPosition);
 
   const handleMarkerDrug = (e: google.maps.MapMouseEvent) => {
     if (e.latLng) {
       const position = { lat: e.latLng.lat(), lng: e.latLng.lng() };
-      setMarkerPosition(position);
+      dispatch(updateSelectedMarkerPosition(position));
       dispatch(updateSelectedAddress(''));
     }
   };
   const [directions, setDirections] = useState<google.maps.DirectionsResult | null>(null);
 
   useEffect(() => {
-    getAddressByCoords(markerPosition).then(res => {
+    getAddressByCoords(selectedMarkerPosition).then(res => {
       if (res) {
-        const formattedAddresses = res.results.map((item: any) => {
-          return item.formatted_address;
-        }) as string[];
-        setClientAddressesArray(formattedAddresses.slice(0, 5));
+        const resultsArray = res.slice(0, 5);
+        setClientAddressesArray(resultsArray);
       }
     });
-  }, [markerPosition, setClientAddressesArray]);
+  }, [selectedMarkerPosition, setClientAddressesArray]);
   useEffect(() => {
     if (!getDirections) {
       setDirections(null);
@@ -69,11 +74,8 @@ const GoogleMapAdress = ({ setClientAddressesArray, setDirectionProps, getDirect
     result: google.maps.DirectionsResult | null,
     status: google.maps.DirectionsStatus
   ) => {
-    console.log('response Directions Service: ', result);
-
     if (result !== null) {
       if (status === 'OK') {
-        console.log('setDirections');
         setDirections(result);
         setDirectionProps({
           distance: result.routes[0].legs[0].distance?.text,
@@ -84,13 +86,12 @@ const GoogleMapAdress = ({ setClientAddressesArray, setDirectionProps, getDirect
       }
     }
   };
-
   return (
     <div className={css.container}>
       {!isLoaded && <p>Map isn't loaded</p>}
       {isLoaded && (
         <GoogleMap
-          center={markerPosition || center}
+          center={selectedMarkerPosition || defaultMapCenter}
           zoom={13}
           mapContainerClassName={css.mapContainer}
           options={{
@@ -99,20 +100,14 @@ const GoogleMapAdress = ({ setClientAddressesArray, setDirectionProps, getDirect
             mapTypeControl: false,
           }}
         >
-          {markerPosition && !directions && getDirections && (
+          {selectedMarkerPosition && selectedShopAddress && !directions && getDirections && (
             <DirectionsService
               options={{
-                destination: shopAddress,
-                origin: markerPosition,
+                destination: selectedShopAddress,
+                origin: selectedMarkerPosition,
                 travelMode: google.maps.TravelMode.DRIVING,
               }}
               callback={directionsCallback}
-              onLoad={directionsService => {
-                console.log('DirectionsService onLoad directionsService: ', directionsService);
-              }}
-              onUnmount={directionsService => {
-                console.log('DirectionsService onUnmount directionsService: ', directionsService);
-              }}
             />
           )}
           {directions && (
@@ -120,25 +115,18 @@ const GoogleMapAdress = ({ setClientAddressesArray, setDirectionProps, getDirect
               options={{
                 directions,
               }}
-              onLoad={directionsRenderer => {
-                console.log('DirectionsRenderer onLoad directionsRenderer: ', directionsRenderer);
-              }}
-              onUnmount={directionsRenderer => {
-                console.log(
-                  'DirectionsRenderer onUnmount directionsRenderer: ',
-                  directionsRenderer
-                );
-              }}
             />
           )}
-          <PanningComponent position={markerPosition} />
+          <PanningComponent position={selectedMarkerPosition} />
           <MarkerF
-            position={markerPosition || center}
+            position={selectedMarkerPosition || defaultMapCenter}
             draggable
             onDragEnd={handleMarkerDrug}
             label="Your address"
           />
-          <MarkerF position={shopAddress} label="Mc Donny" />
+          {selectedShopAddress && (
+            <MarkerF position={selectedShopAddress} label={selectedShopName} />
+          )}
         </GoogleMap>
       )}
     </div>

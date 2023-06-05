@@ -8,6 +8,7 @@ const initialState: clientData = {
     phone: '',
     address: '',
     selectedAddress: '',
+    selectedMarkerPosition: null,
   },
 };
 
@@ -30,6 +31,12 @@ const clientDataSlice = createSlice({
     updateSelectedAddress: (state, { payload }: { payload: string }) => {
       return { contacts: { ...state.contacts, selectedAddress: payload } };
     },
+    updateSelectedMarkerPosition: (
+      state,
+      { payload }: { payload: google.maps.LatLngLiteral | null }
+    ) => {
+      return { contacts: { ...state.contacts, selectedMarkerPosition: payload } };
+    },
     resetClientData: () => initialState,
   },
 });
@@ -41,6 +48,7 @@ export const {
   updateClientPhone,
   resetClientData,
   updateSelectedAddress,
+  updateSelectedMarkerPosition,
 } = clientDataSlice.actions;
 
 export const clientDataReducer = clientDataSlice.reducer;
