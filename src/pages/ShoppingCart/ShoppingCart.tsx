@@ -85,7 +85,27 @@ const ShoppingCart = (props: Props) => {
       <div className={css.rightColumn}>
         <ShoppingCartList />
         {submitBtnDisabled && (
-          <p>To Submit the order enter your data in all inputs and add product to your cart</p>
+          <>
+            <p className={css.title}>
+              <strong>To Submit the order:</strong>
+            </p>
+            {(!name || !email || !phone || !address || !isCaptchaDone) && (
+              <>
+                <p className={css.title}>Fill next information about you:</p>
+                <ul className={css.list}>
+                  {!name && <li className={css.item}>Your name</li>}
+                  {!email && <li className={css.item}>Your email</li>}
+                  {!phone && <li className={css.item}>Your phone</li>}
+                  {!address && <li className={css.item}>Your address</li>}
+                  {!isCaptchaDone && <li className={css.item}>CAPTCHA</li>}
+                </ul>
+              </>
+            )}
+
+            {!shoppingCartList.length && (
+              <p className={css.title}>Choose product in a shop and Add it to the Cart</p>
+            )}
+          </>
         )}
         <ErrorBoundary
           onError={() => setIsCaptchaDone(true)}

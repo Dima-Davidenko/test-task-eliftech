@@ -28,3 +28,14 @@
   align-self: flex-end;
   margin-bottom: 10px;
 }
+.title {
+  margin: 0;
+}
+.list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.item {
+  padding-left: 20px;
+}
