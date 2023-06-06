@@ -1,24 +1,24 @@
+import { useState } from 'react';
+import ReCAPTCHA from 'react-google-recaptcha';
 import { useSelector } from 'react-redux';
 import ClientDataForm from '../../components/ClientDataForm/ClientDataForm';
+import Directions from '../../components/Directions/Directions';
+import ClientAddresses from '../../components/GoogleMap/ClientAddresses/ClientAddresses';
 import GoogleMapAdress from '../../components/GoogleMap/GoogleMapAdress';
 import ShoppingCartList from '../../components/ShoppingCartList/ShoppingCartList';
 import { useTypedDispatch } from '../../hooks/useTypedDispatch';
-import css from './ShoppingCart.module.css';
 import {
   selectClientAddress,
   selectClientEmail,
   selectClientName,
   selectClientPhone,
 } from '../../redux/clientData/clientDataSelectors';
-import { resetClientData } from '../../redux/clientData/clientDataSlice';
 import {
   selectShopInCart,
   selectShoppingCartList,
 } from '../../redux/shoppingCart/shoppingCartSelectors';
 import { resetShoppingCart } from '../../redux/shoppingCart/shoppingCartSlice';
-import ClientAddresses from '../../components/GoogleMap/ClientAddresses/ClientAddresses';
-import { useState } from 'react';
-import Directions from '../../components/Directions/Directions';
+import css from './ShoppingCart.module.css';
 
 type Props = {};
 
@@ -39,7 +39,9 @@ const ShoppingCart = (props: Props) => {
   const address = useSelector(selectClientAddress);
   const products = useSelector(selectShoppingCartList);
   const shopId = useSelector(selectShopInCart);
-  const submitBtnDisabled = !shoppingCartList.length || !name || !email || !phone || !address;
+  const [isCaptchaDone, setIsCaptchaDone] = useState<boolean>(false);
+  const submitBtnDisabled =
+    !shoppingCartList.length || !name || !email || !phone || !address || !isCaptchaDone;
 
   const saveOrder = () => {
     localStorage.setItem(
@@ -52,6 +54,10 @@ const ShoppingCart = (props: Props) => {
     );
     // dispatch(resetClientData());
     dispatch(resetShoppingCart());
+  };
+  const captchaSiteKey = process.env.REACT_APP_GOOGLE_CAPTCHA_CLIENT_KEY as string;
+  const completeCaptcha = () => {
+    setIsCaptchaDone(true);
   };
 
   return (
@@ -79,7 +85,7 @@ const ShoppingCart = (props: Props) => {
         {submitBtnDisabled && (
           <p>To Submit the order enter your data in all inputs and add product to your cart</p>
         )}
-
+        <ReCAPTCHA className={css.captcha} sitekey={captchaSiteKey} onChange={completeCaptcha} />
         <button className={css.orderBtn} onClick={saveOrder} disabled={submitBtnDisabled}>
           Submit
         </button>
