@@ -56,7 +56,7 @@ const shoppingCartSlice = createSlice({
           const filteredList = state.productList.filter(cartItem => {
             return cartItem.id !== payload.id;
           });
-          return { ...state, productList: filteredList };
+          return { shopId: filteredList.length ? state.shopId : '', productList: filteredList };
         }
       }
     },
