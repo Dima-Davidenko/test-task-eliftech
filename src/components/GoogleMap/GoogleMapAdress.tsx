@@ -41,8 +41,8 @@ const GoogleMapAdress = ({ setClientAddressesArray, setDirectionProps, getDirect
   const selectedShopName = useSelector(selectSelectedShopName);
 
   const defaultMapCenter: google.maps.LatLngLiteral = {
-    lat: 49.85606215181253,
-    lng: 24.03341576137615,
+    lat: 49.844028239230354,
+    lng: 24.0263659852304,
   };
 
   const selectedMarkerPosition = useSelector(selectSelectedMarkerPosition);
@@ -64,11 +64,24 @@ const GoogleMapAdress = ({ setClientAddressesArray, setDirectionProps, getDirect
       }
     });
   }, [selectedMarkerPosition, setClientAddressesArray]);
+
   useEffect(() => {
     if (!getDirections) {
       setDirections(null);
     }
   }, [getDirections]);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position: any) => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        };
+        dispatch(updateSelectedMarkerPosition(pos));
+      });
+    }
+  }, [dispatch]);
 
   const directionsCallback = (
     result: google.maps.DirectionsResult | null,
