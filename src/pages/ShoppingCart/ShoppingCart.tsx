@@ -1,5 +1,7 @@
+'use client';
 import { useState } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
+import { ErrorBoundary } from 'react-error-boundary';
 import { useSelector } from 'react-redux';
 import ClientDataForm from '../../components/ClientDataForm/ClientDataForm';
 import Directions from '../../components/Directions/Directions';
@@ -55,7 +57,7 @@ const ShoppingCart = (props: Props) => {
     // dispatch(resetClientData());
     dispatch(resetShoppingCart());
   };
-  const captchaSiteKey = process.env.REACT_APP_GOOGLE_CAPTCHA_CLIENT_KEY as string;
+  const captchaSiteKey = process.env.REACT_APP_GOOGLE_CAPTCHA_CLIENT_KEY_NEW as string;
   const completeCaptcha = () => {
     setIsCaptchaDone(true);
   };
@@ -85,7 +87,18 @@ const ShoppingCart = (props: Props) => {
         {submitBtnDisabled && (
           <p>To Submit the order enter your data in all inputs and add product to your cart</p>
         )}
-        <ReCAPTCHA className={css.captcha} sitekey={captchaSiteKey} onChange={completeCaptcha} />
+        <ErrorBoundary
+          onError={() => setIsCaptchaDone(true)}
+          fallback={<div>CAPTCHA isn't available now</div>}
+        >
+          <ReCAPTCHA
+            className={css.captcha}
+            sitekey={captchaSiteKey}
+            onChange={completeCaptcha}
+            onErrored={() => setIsCaptchaDone(true)}
+          />
+        </ErrorBoundary>
+
         <button className={css.orderBtn} onClick={saveOrder} disabled={submitBtnDisabled}>
           Submit
         </button>
